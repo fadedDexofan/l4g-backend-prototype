@@ -1,4 +1,25 @@
 {
-  "language": "ts",
-  "collection": "@nestjs/schematics"
+    "language": "ts",
+    "collection": "@nestjs/schematics",
+    "projects": {
+        "l4g": {
+            "root": "src/apps/l4g/",
+            "sourceRoot": "src/apps/l4g",
+            "outputPath": "dist/apps/l4g",
+            "projectType": "application"
+        },
+        "@l4g/core-nestjs": {
+            "root": "src/libs/core/",
+            "sourceRoot": "src/libs/core",
+            "outputPath": "dist/libs/core",
+            "projectType": "library"
+        },
+        "@l4g/auth-nestjs": {
+            "root": "src/libs/auth/",
+            "sourceRoot": "src/libs/auth",
+            "outputPath": "dist/libs/auth",
+            "projectType": "library"
+        }
+    },
+    "defaultProject": "l4g"
 }
