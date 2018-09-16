@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-  Logger,
+  Logger
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { CORE_CONFIG_TOKEN } from '../configs/core.config';
@@ -16,13 +16,13 @@ import { ICoreConfig } from '../interfaces/core-config.interface';
 @Catch(SyntaxError, CustomValidationError, CustomError, HttpException)
 export class CustomExceptionFilter implements ExceptionFilter {
   constructor(
-    @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,
+    @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig
   ) {}
   private response(
     exception: CustomValidationError | SyntaxError | Error | HttpException,
     host: ArgumentsHost,
     data: any,
-    status?: number,
+    status?: number
   ) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
@@ -30,13 +30,13 @@ export class CustomExceptionFilter implements ExceptionFilter {
     Logger.error(
       JSON.stringify(exception),
       undefined,
-      CustomExceptionFilter.name,
+      CustomExceptionFilter.name
     );
     response.status(status ? status : HttpStatus.BAD_REQUEST).json(data);
   }
   catch(
     exception: CustomValidationError | SyntaxError | Error | HttpException,
-    host: ArgumentsHost,
+    host: ArgumentsHost
   ) {
     const errors = {};
     if (exception instanceof CustomValidationError) {
@@ -49,17 +49,17 @@ export class CustomExceptionFilter implements ExceptionFilter {
         });
       });
       this.response(exception, host, {
-        validationErrors: errors,
+        validationErrors: errors
       });
     }
     if (exception instanceof CustomError) {
       this.response(exception, host, {
-        message: exception.message,
+        message: exception.message
       });
     }
     if (exception instanceof SyntaxError) {
       this.response(exception, host, {
-        message: 'Syntax error',
+        message: 'Syntax error'
       });
     }
     if (exception instanceof HttpException) {
@@ -70,9 +70,9 @@ export class CustomExceptionFilter implements ExceptionFilter {
           message:
             exception.message && exception.message.message
               ? exception.message.message
-              : 'Http exception',
+              : 'Http exception'
         },
-        exception.getStatus(),
+        exception.getStatus()
       );
     }
   }

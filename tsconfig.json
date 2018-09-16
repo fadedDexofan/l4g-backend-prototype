@@ -1,23 +1,32 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "noImplicitAny": false,
-    "removeComments": true,
-    "noLib": false,
-    "allowSyntheticDefaultImports": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "target": "es6",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./src"
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+    "compilerOptions": {
+        "module": "commonjs",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "allowSyntheticDefaultImports": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "target": "es6",
+        "sourceMap": true,
+        "allowJs": true,
+        "outDir": "./dist",
+        "baseUrl": "./src",
+        "rootDir": "./src",
+        "paths": {
+            "@l4g/core-nestjs": ["libs/core"],
+            "@l4g/core-nestjs/*": ["libs/core/*"],
+            "@l4g/auth-nestjs": ["libs/auth"],
+            "@l4g/auth-nestjs/*": ["libs/auth/*"]
+        }
+    },
+    "exclude": [
+        "frontend",
+        "dist",
+        "node_modules",
+        "**/*.spec.ts",
+        "**/*-spec.ts",
+        "**/*.js"
+    ]
 }

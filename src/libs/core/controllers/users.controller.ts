@@ -10,14 +10,14 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiImplicitParam,
   ApiImplicitQuery,
   ApiResponse,
-  ApiUseTags,
+  ApiUseTags
 } from '@nestjs/swagger';
 import { plainToClass, classToPlain } from 'class-transformer';
 import { InCreateUserDto } from '../dto/in-create-user.dto';
@@ -38,7 +38,7 @@ export class UsersController {
   @ApiResponse({
     status: HttpStatus.CREATED,
     type: OutUserDto,
-    description: 'User has been succesfully created.',
+    description: 'User has been succesfully created.'
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @Post()
@@ -47,8 +47,8 @@ export class UsersController {
       return plainToClass(
         OutUserDto,
         await this.service.create({
-          item: await plainToClass(User, dto).setPassword(dto.password),
-        }),
+          item: await plainToClass(User, dto).setPassword(dto.password)
+        })
       );
     } catch (error) {
       throw error;
@@ -59,7 +59,7 @@ export class UsersController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: OutUserDto,
-    description: 'User has been successfully updated.',
+    description: 'User has been successfully updated.'
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'uuid', type: String })
@@ -70,8 +70,8 @@ export class UsersController {
         OutUserDto,
         await this.service.update({
           uuid,
-          item: await plainToClass(User, dto).setPassword(dto.password),
-        }),
+          item: await plainToClass(User, dto).setPassword(dto.password)
+        })
       );
     } catch (error) {
       throw error;
@@ -82,7 +82,7 @@ export class UsersController {
   @ApiResponse({
     status: HttpStatus.OK,
     type: OutUserDto,
-    description: '',
+    description: ''
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @ApiImplicitParam({ name: 'uuid', type: String })
@@ -92,8 +92,8 @@ export class UsersController {
       return plainToClass(
         OutUserDto,
         await this.service.findByUuid({
-          uuid,
-        }),
+          uuid
+        })
       );
     } catch (error) {
       throw error;

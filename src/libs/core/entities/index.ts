@@ -1,3 +1,4 @@
+import { Group } from './group.entity';
 import { User } from './user.entity';
 
-export const entities = [User];
+export const entities = [Group, User];

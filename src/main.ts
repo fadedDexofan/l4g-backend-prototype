@@ -10,14 +10,23 @@ const NODE_ENV = process.env.NODE_ENV || 'develop';
 if (NODE_ENV !== 'develop') {
   tsConfigPaths.register({
     baseUrl: __dirname,
-    paths: tsConfig.compilerOptions.paths,
+    paths: tsConfig.compilerOptions.paths
   });
 }
 
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from 'apps/l4g/app.module';
+
+import {
+  appFilters,
+  appPipes,
+  CORE_CONFIG_TOKEN,
+  defaultCoreConfig,
+  ICoreConfig
+} from '@l4g/core-nestjs';
+import { AppModule } from './apps/l4g/app.module';
+
 import { load } from 'dotenv';
 import { accessSync, readFileSync } from 'fs';
 import * as path from 'path';
@@ -56,7 +65,22 @@ async function bootstrap() {
     }
   }
 
-  const app = await NestFactory.create(AppModule);
+  const coreConfig: ICoreConfig = {
+    ...defaultCoreConfig,
+    debug: process.env.DEBUG === 'true',
+    port: process.env.PORT ? +process.env.PORT : 3000
+  };
+
+  const app = await NestFactory.create(
+    AppModule.forRoot({
+      providers: [
+        { provide: CORE_CONFIG_TOKEN, useValue: coreConfig },
+        ...appFilters,
+        ...appPipes
+      ]
+    }),
+    { cors: true }
+  );
 
   let documentBuilder = new DocumentBuilder()
     .setTitle(packageBody.name)

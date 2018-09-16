@@ -1,9 +1,8 @@
 import { ApiModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
-import { MaxLength, IsUUID } from 'class-validator';
+import { MaxLength, IsUUID, IsMobilePhone } from 'class-validator';
 
 export class UserDto {
-  @IsUUID()
   @ApiModelProperty({ type: String })
   uuid: string;
   @Exclude()
@@ -15,4 +14,8 @@ export class UserDto {
   @MaxLength(30)
   @ApiModelProperty()
   lastName: string;
+  @ApiModelProperty()
+  @MaxLength(12)
+  @IsMobilePhone('ru-RU')
+  phone: string;
 }

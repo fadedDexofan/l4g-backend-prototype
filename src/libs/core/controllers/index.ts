@@ -1,3 +1,4 @@
-import { UsersController } from '../controllers/users.controller';
+import { GroupsController } from './groups.controller';
+import { UsersController } from './users.controller';
 
-export const controllers = [UsersController];
+export const controllers = [GroupsController, UsersController];
