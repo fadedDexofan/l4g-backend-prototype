@@ -22,16 +22,21 @@ import {
 import { plainToClass, classToPlain } from 'class-transformer';
 import { Group } from '../entities/group.entity';
 import { GroupsService } from '../services/groups.service';
+import { UsersService } from '../services/users.service';
 import { PassThrough } from 'stream';
 import { OutGroupDto } from '../dto/out-group.dto';
 import { InCreateGroupDto } from '../dto/in-create-group.dto';
 import { OutGroupsDto } from '../dto/out-groups.dto';
+import { GroupActionDto } from '../dto/group-action.dto';
 
 @ApiUseTags('groups')
 @ApiBearerAuth()
 @Controller('/api/groups')
 export class GroupsController {
-  constructor(private readonly service: GroupsService) {}
+  constructor(
+    private readonly groupService: GroupsService,
+    private readonly userService: UsersService
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
@@ -45,7 +50,7 @@ export class GroupsController {
     try {
       return plainToClass(
         OutGroupDto,
-        await this.service.create({
+        await this.groupService.create({
           item: plainToClass(Group, dto)
         })
       );
@@ -64,7 +69,51 @@ export class GroupsController {
   @Get()
   async findAll() {
     try {
-      return plainToClass(OutGroupsDto, await this.service.findAll());
+      return plainToClass(OutGroupsDto, await this.groupService.findAll());
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: OutGroupDto,
+    description: 'User joined group'
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
+  @Post('/actions')
+  async addUser(@Body() dto: GroupActionDto) {
+    try {
+      return plainToClass(
+        OutGroupDto,
+        await this.groupService.addUser({
+          userUuid: dto.userUuid,
+          groupUuid: dto.groupUuid
+        })
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: OutGroupDto,
+    description: 'User leaved group'
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
+  @Delete('/actions')
+  async removeUser(@Body() dto: GroupActionDto) {
+    try {
+      return plainToClass(
+        OutGroupDto,
+        await this.groupService.removeUser({
+          userUuid: dto.userUuid,
+          groupUuid: dto.groupUuid
+        })
+      );
     } catch (error) {
       throw error;
     }

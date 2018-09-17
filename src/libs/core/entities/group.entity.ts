@@ -11,20 +11,30 @@ import {
 
 import { User } from './user.entity';
 
+export enum GroupState {
+  Recruitment = 'Recruitment',
+  Filled = 'Filled',
+  Finished = 'Finished',
+  Cancelled = 'Cancelled'
+}
+
 @Entity()
 export class Group {
   @PrimaryGeneratedColumn('uuid')
   uuid: string = undefined;
 
-  @Column({length: 100})
+  @Column({ type: 'enum', enum: GroupState, default: GroupState.Recruitment })
+  groupState: GroupState;
+
+  @Column({ length: 100 })
   @MaxLength(100)
   name: string = undefined;
 
-  @Column({length: 255})
+  @Column({ length: 255 })
   @MaxLength(255)
   goal: string = undefined;
 
-  @Column()
+  @Column({ default: new Date() })
   @IsDate()
   dateTime: Date;
 

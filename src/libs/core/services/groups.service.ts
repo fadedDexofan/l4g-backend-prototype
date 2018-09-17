@@ -47,4 +47,49 @@ export class GroupsService {
       throw error;
     }
   }
+
+  async addUser(options: { userUuid: string; groupUuid: string }) {
+    try {
+      const userItem = await this.userRepository.findOneOrFail(
+        options.userUuid
+      );
+
+      const groupItem = await this.groupRepository.findOneOrFail(
+        options.groupUuid,
+        { relations: ['alpha', 'members'] }
+      );
+
+      await groupItem.members.push(userItem);
+      const item = await this.groupRepository.save(groupItem);
+
+      return { group: item };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async removeUser(options: { userUuid: string; groupUuid: string }) {
+    try {
+      const userItem = await this.userRepository.findOneOrFail(
+        options.userUuid
+      );
+
+      const groupItem = await this.groupRepository.findOneOrFail(
+        options.groupUuid,
+        { relations: ['alpha', 'members'] }
+      );
+
+      const filteredMembers = groupItem.members.filter(user => {
+        return user.uuid !== userItem.uuid;
+      });
+
+      groupItem.members = filteredMembers;
+
+      const item = await this.groupRepository.save(groupItem);
+
+      return { group: item };
+    } catch (error) {
+      throw error;
+    }
+  }
 }

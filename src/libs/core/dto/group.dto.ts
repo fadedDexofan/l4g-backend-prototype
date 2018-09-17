@@ -4,7 +4,7 @@ import { ApiModelProperty } from '@nestjs/swagger';
 import { UserDto } from './user.dto';
 
 export class GroupDto {
-  @ApiModelProperty({ type: String })
+  @ApiModelProperty()
   uuid: string;
 
   @MaxLength(100)
