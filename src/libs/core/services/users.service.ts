@@ -25,10 +25,11 @@ export class UsersService {
   }
 
   async update(options: { uuid: string; item: User }) {
-    options.item.uuid = options.uuid;
     try {
-      options.item = await this.repository.save(options.item);
-      const { user } = await this.findByUuid({ uuid: options.item.uuid });
+      const { user: oldUser } = await this.findByUuid({ uuid: options.uuid });
+      oldUser.firstName = options.item.firstName;
+      oldUser.lastName = options.item.lastName;
+      const user = await this.repository.save(oldUser);
       return { user };
     } catch (error) {
       throw error;
@@ -39,6 +40,15 @@ export class UsersService {
     try {
       const item = await this.repository.findOneOrFail(options.uuid);
       return { user: item };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findAll() {
+    try {
+      const items = await this.repository.find();
+      return { users: items };
     } catch (error) {
       throw error;
     }

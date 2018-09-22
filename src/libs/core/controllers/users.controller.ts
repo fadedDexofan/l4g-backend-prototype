@@ -27,12 +27,17 @@ import { ParseIntWithDefaultPipe } from '../pipes/parse-int-with-default.pipe';
 import { UsersService } from '../services/users.service';
 import { InUserDto } from '../dto/in-user.dto';
 import { PassThrough } from 'stream';
+import { OutGroupsDto } from '../dto/out-groups.dto';
+import { GroupsService } from '../services/groups.service';
 
 @ApiUseTags('users')
 @ApiBearerAuth()
 @Controller('/api/users')
 export class UsersController {
-  constructor(private readonly service: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly groupService: GroupsService
+  ) {}
 
   @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
@@ -46,7 +51,7 @@ export class UsersController {
     try {
       return plainToClass(
         OutUserDto,
-        await this.service.create({
+        await this.userService.create({
           item: await plainToClass(User, dto).setPassword(dto.password)
         })
       );
@@ -68,9 +73,9 @@ export class UsersController {
     try {
       return plainToClass(
         OutUserDto,
-        await this.service.update({
+        await this.userService.update({
           uuid,
-          item: await plainToClass(User, dto).setPassword(dto.password)
+          item: plainToClass(User, dto)
         })
       );
     } catch (error) {
@@ -91,8 +96,30 @@ export class UsersController {
     try {
       return plainToClass(
         OutUserDto,
-        await this.service.findByUuid({
+        await this.userService.findByUuid({
           uuid
+        })
+      );
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @ApiResponse({
+    status: HttpStatus.OK,
+    type: OutGroupsDto,
+    description: ''
+  })
+  @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
+  @ApiImplicitParam({ name: 'uuid', type: String })
+  @Get(':uuid/journal')
+  async userJournal(@Param('uuid') uuid: string) {
+    try {
+      return plainToClass(
+        OutGroupsDto,
+        await this.groupService.findUserGroups({
+          userUuid: uuid
         })
       );
     } catch (error) {

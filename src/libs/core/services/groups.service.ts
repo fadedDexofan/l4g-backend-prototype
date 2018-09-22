@@ -26,6 +26,17 @@ export class GroupsService {
     }
   }
 
+  async update(options: { uuid: string; item: Group }) {
+    options.item.uuid = options.uuid;
+    const group = await this.groupRepository.findOneOrFail(options.uuid);
+    Object.assign(group, options.item);
+    const item = await this.groupRepository.save(group);
+    return { group: item };
+    try {
+      options.item;
+    } catch (error) {}
+  }
+
   async findByUuid(options: { uuid: string }) {
     try {
       const item = await this.groupRepository.findOneOrFail(options.uuid, {
@@ -46,6 +57,28 @@ export class GroupsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findUserGroups(options: { userUuid: string }) {
+    try {
+      // this.groupRepository.
+      const user = await this.userRepository.findOneOrFail();
+      const groups = await this.groupRepository
+        .createQueryBuilder('group')
+        .leftJoinAndSelect('group.alpha', 'alpha')
+        .leftJoinAndSelect(
+          'group.members',
+          'member',
+          'member.uuid = :userUuid',
+          {
+            userUuid: options.userUuid
+          }
+        )
+        // .groupBy('group.uuid')
+        .getMany();
+
+      return { groups };
+    } catch (error) {}
   }
 
   async addUser(options: { userUuid: string; groupUuid: string }) {
